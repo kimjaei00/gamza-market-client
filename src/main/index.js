@@ -2,6 +2,8 @@ import React from "react";
 import "./index.css";
 import axios from "axios";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
 function MianPage() {
   const [products, setProducts] = React.useState([]);
   React.useEffect(function () {
@@ -22,7 +24,7 @@ function MianPage() {
     <div>
       <div id="header">
         <div id="header-area">
-          <image src="images/icons/logo.png" />
+          <img src="images/icons/logo.png" />
         </div>
       </div>
       <div id="body">
@@ -34,20 +36,22 @@ function MianPage() {
           {products.map(function (product, index) {
             return (
               <div className="product-card">
-                <div>
-                  <img className="product-img" src={product.imageUrl} />
-                </div>
-                <div className="produt-contents">
-                  <span className="product-name">{product.name}</span>
-                  <span className="product-price">{product.price}원</span>
-                  <div className="product-seller">
-                    <img
-                      className="product-avatar"
-                      src="images/icons/avatar.png"
-                    />
-                    <span>{product.seller}</span>
+                <Link className="product-link" to={`/products/${index}`}>
+                  <div>
+                    <img className="product-img" src={product.imageUrl} />
                   </div>
-                </div>
+                  <div className="produt-contents">
+                    <span className="product-name">{product.name}</span>
+                    <span className="product-price">{product.price}원</span>
+                    <div className="product-seller">
+                      <img
+                        className="product-avatar"
+                        src="images/icons/avatar.png"
+                      />
+                      <span>{product.seller}</span>
+                    </div>
+                  </div>
+                </Link>
               </div>
             );
           })}
