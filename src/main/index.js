@@ -39,8 +39,8 @@ function MianPage() {
                   <img className="product-img" src={product.imageUrl} />
                 </div>
                 <div className="produt-contents">
-                  <span clssName="product-name">{product.name}</span>
-                  <span className="product-price ">{product.price}원</span>
+                  <div className="product-name">{product.name}</div>
+                  <span className="product-price">{product.price}원</span>
 
                   <div className="product-seller">
                     <img
