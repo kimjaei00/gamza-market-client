@@ -2,29 +2,65 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "./index.css";
+import { API_URL } from "../config/constants";
+import dayjs from "dayjs";
+import { Button, message, Spin } from "antd";
+import ProductCard from "../components/productCard";
 
 function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  useEffect(function () {
+  const [products, setProducts] = useState([]);
+  const getProduct = () => {
     axios
-      .get(
-        `https://e4d7875c-3a46-4890-a8a1-c19d0a3ae961.mock.pstmn.io/products/${id}`
-      )
-      .then(function (result) {
-        setProduct(result.data);
+      .get(`${API_URL}/products/${id}`)
+      .then((result) => {
+        setProduct(result.data.product);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.error(error);
       });
-  }, []);
+  };
+  const getRecommendations = () => {
+    axios
+      .get(`${API_URL}/products/${id}/recommendation`)
+      .then((result) => {
+        setProducts(result.data.products);
+        console.log(result.data.products);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    getProduct();
+    getRecommendations();
+  }, [id]);
+
   if (product === null) {
-    return <h1>상품정보를 받고 있습니다...</h1>;
+    return (
+      <div style={{ textAlign: "center", paddingTop: 32 }}>
+        <Spin size="large" />
+      </div>
+    );
   }
+
+  const onClickPurchase = () => {
+    axios
+      .post(`${API_URL}/purchase/${id}`)
+      .then((result) => {
+        message.info("구매가 완료되었습니다");
+        getProduct();
+      })
+      .catch((error) => {
+        message.error(`에러가 발생했습니다. ${error.message}`);
+      });
+  };
+
   return (
     <div>
       <div id="image-box">
-        <img src={"/" + product.imageUrl} />
+        <img src={`${API_URL}/${product.imageUrl}`} />
       </div>
       <div id="profile-box">
         <img src="/images/icons/avatar.png" />
@@ -32,11 +68,26 @@ function ProductPage() {
       </div>
       <div id="contents-box">
         <div id="name">{product.name}</div>
-        <div id="price">{product.price}</div>
-        <div id="createdAt">2020년12월8일</div>
-        <div id="description">{product.description}</div>
+        <div id="price">{product.price}원</div>
+        <div id="createdAt">
+          {dayjs(product.createdAt).format("YYYY년 MM월 DD일")}
+        </div>
+        <Button
+          id="purchase-button"
+          size="large"
+          type="primary"
+          danger
+          onClick={onClickPurchase}
+          disabled={product.soldout === 1}
+        >
+          재빨리 구매하기
+        </Button>
+        <div id="description-box">
+          <pre id="description">{product.description} </pre>
+        </div>
       </div>
     </div>
   );
 }
+
 export default ProductPage;

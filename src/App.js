@@ -1,6 +1,6 @@
 import "antd/dist/antd.css";
 import "./App.css";
-import MainPageComponent from "./main/index.js";
+import MainPageComponent from "./main";
 import { Switch, Route, Link, useHistory } from "react-router-dom";
 import UploadPage from "./upload";
 import ProductPage from "./product";
@@ -22,7 +22,7 @@ function App() {
             }}
             icon={<DownloadOutlined />}
           >
-            상품업로드
+            상품 업로드
           </Button>
         </div>
       </div>
